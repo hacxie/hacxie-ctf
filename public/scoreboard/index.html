@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Hacxie CTF Scoreboard</title>
+  <style>
+    body { font-family: Arial; background: #111; color: #eee; padding: 20px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { border: 1px solid #555; padding: 8px; text-align: left; }
+    th { background: #222; }
+    input, button { padding: 10px; margin: 5px; }
+  </style>
+</head>
+<body>
+  <h1>Hacxie CTF Scoreboard</h1>
+  <form id="flagForm">
+    <input type="text" id="name" placeholder="Your Name" required />
+    <input type="text" id="flag" placeholder="Enter Flag" required />
+    <button type="submit">Submit Flag</button>
+  </form>
+
+  <table id="scoreTable">
+    <thead>
+      <tr><th>Name</th><th>Score</th></tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    const form = document.getElementById('flagForm');
+    const tableBody = document.querySelector('#scoreTable tbody');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('name').value;
+      const flag = document.getElementById('flag').value;
+
+      const res = await fetch('/submit-flag', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, flag })
+      });
+      const data = await res.json();
+      alert(data.message);
+      loadScores();
+    });
+
+    async function loadScores() {
+      const res = await fetch('/scores');
+      const scores = await res.json();
+      tableBody.innerHTML = '';
+      scores.forEach(s => {
+        const row = document.createElement('tr');
+        row.innerHTML = `<td>${s.name}</td><td>${s.score}</td>`;
+        tableBody.appendChild(row);
+      });
+    }
+
+    loadScores();
+  </script>
+</body>
+</html>

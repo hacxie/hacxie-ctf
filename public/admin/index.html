@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Panel - Hacxie CTF</title>
+  <style>
+    body { font-family: Arial; background: #111; color: #eee; padding: 20px; }
+    button { padding: 10px; margin: 10px 0; }
+  </style>
+</head>
+<body>
+  <h1>Admin Panel</h1>
+  <button onclick="resetScoreboard()">Reset Scoreboard</button>
+  <br>
+  <a href="/export-scores" target="_blank">
+    <button>Download Scoreboard CSV</button>
+  </a>
+
+  <script>
+    function resetScoreboard() {
+      fetch('/reset-scores', { method: 'POST' })
+        .then(res => res.json())
+        .then(data => alert(data.message));
+    }
+  </script>
+</body>
+</html>
